@@ -9,21 +9,22 @@ import java.util.Scanner;
 
 public class Main {
     public static BufferedImage convertToGrayScale(BufferedImage inputImage) {
-         int height = inputImage.getHeight();
-         int width = inputImage.getWidth();
-         BufferedImage outputImage = new BufferedImage(width, height,
+        int height = inputImage.getHeight();
+        int width = inputImage.getWidth();
+        BufferedImage outputImage = new BufferedImage(width, height,
                 BufferedImage.TYPE_BYTE_GRAY);
-         for (int i = 0; i < height; i++) {
+        for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                 outputImage.setRGB(j, i, inputImage.getRGB(j, i));
-                 }
-             }
-         return outputImage;
-         }
+                outputImage.setRGB(j, i, inputImage.getRGB(j, i));
+            }
+        }
+        return outputImage;
+    }
+
     public static BufferedImage ImageFlipping(BufferedImage image) {
         int height = image.getHeight();
         int width = image.getWidth();
-        for (int h = 0; h < height; h++) {
+        for(int h =0; h<height; h++) {
             for (int w = 0; w < width / 2; w++) {
                 //Getting pixel values
                 Color pixels = new Color(image.getRGB(w, h));
@@ -34,6 +35,28 @@ public class Main {
             }
         }
         return image;
+    }
+
+
+
+
+    public static BufferedImage flippingImageVertically(BufferedImage image) {
+
+        // Inversing Vertically While First Iterating on the rows
+        for (int w = 0; w < image.getWidth(); w++) {
+            for (int h = 0; h < image.getHeight() / 2; h++) {
+
+                // Retriving Pixels
+                Color pixels = new Color(image.getRGB(w, h));
+                int temp = pixels.getRGB();
+                Color Inverse_Pixel = new Color(image.getRGB(w, image.getHeight() - 1 - h));
+                image.setRGB(w, h, Inverse_Pixel.getRGB());
+                image.setRGB(w, image.getHeight() - 1 - h, temp);
+            }
+        }
+
+        return image;
+
     }
     public static BufferedImage RotateAntiClockwise(BufferedImage image) {
         int width = image.getWidth();
@@ -109,18 +132,20 @@ public class Main {
             }
         return outputImage;
     }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.println("Command Line Image Editor");
         System.out.println("Press 1 to convert the image to GrayScale");
-        System.out.println("Press 2 to increase brightness of the image");
+        System.out.println("Press 2 to change brightness of the image");
         System.out.println("Press 3 to flip the image Horizontally");
         System.out.println("Press 4 to rotate the image Clockwise");
         System.out.println("Press 5 to rotate the image Anti-Clockwise");
+        System.out.println("Press 6 to flip the image vertically");
         int operation = sc.nextInt();
+        System.out.println("Enter the path of the image file: ");
+        String path = sc.next();
         if (operation == 1) {
-            System.out.println("Enter the path of the image file: ");
-            String path = sc.nextLine();
             File inputFile = new File(path);
             try {
                 BufferedImage inputImage = ImageIO.read(inputFile);
@@ -130,28 +155,26 @@ public class Main {
             } catch (Exception e) {
                 System.out.println(e);
             }
-            System.out.println("The grayscaled image has been saved by the name GrayscaledImage");
+            System.out.println("The  image has been saved by the name GrayScaled");
         }
         if (operation == 2) {
-            System.out.println("Enter the path of the image file: ");
-            String path = sc.nextLine();
-            System.out.println("Enter the amount of increase in brightness: ");
+
+            System.out.println("Enter the amount of change in brightness: ");
             int bright = sc.nextInt();
             File inputFile = new File(path);
             try {
                 BufferedImage inputImage = ImageIO.read(inputFile);
 
                 BufferedImage increasedBrightness = increaseBrightness(inputImage, bright );
-                File outputFile = new File("BrightnessIncreased.jpg");
+                File outputFile = new File("BrightnessChanged.jpg");
                 ImageIO.write(increasedBrightness, "jpg", outputFile);
             } catch (Exception e) {
                 System.out.println(e);
             }
-            System.out.println("The image with increased brightness has been saved by the name BrightnessIncreased");
+            System.out.println("The brightness has been changed");
         }
         if (operation == 3) {
-            System.out.println("Enter the path of the image file: ");
-            String path = sc.nextLine();
+
             File inputFile = new File(path);
             try {
                 BufferedImage inputImage = ImageIO.read(inputFile);
@@ -161,11 +184,9 @@ public class Main {
             } catch (Exception e) {
                 System.out.println(e);
             }
-            System.out.println("The Flipped image has been saved by the name FLippedImage");
+            System.out.println("The image has been flipped");
         }
         if (operation == 4) {
-            System.out.println("Enter the path of the image file: ");
-            String path = sc.nextLine();
             File inputFile = new File(path);
             try {
                 BufferedImage inputImage = ImageIO.read(inputFile);
@@ -175,11 +196,9 @@ public class Main {
             } catch (Exception e) {
                 System.out.println(e);
             }
-            System.out.println("The Clockwise Rotated image has been saved by the name RotatedClockwise");
+            System.out.println("The image has been rotated Clockwise");
         }
         if (operation == 5) {
-            System.out.println("Enter the path of the image file: ");
-            String path = sc.next();
             File inputFile = new File(path);
             try {
                 BufferedImage inputImage = ImageIO.read(inputFile);
@@ -189,7 +208,19 @@ public class Main {
             } catch (Exception e) {
                 System.out.println(e);
             }
-            System.out.println("The Anti Clockwise Rotated image has been saved by the name AnticlockwiseImage");
+            System.out.println("The Image has been rotated AntiClockwise");
+        }
+        if (operation == 6) {
+            File inputFile = new File(path);
+            try {
+                BufferedImage inputImage = ImageIO.read(inputFile);
+                BufferedImage flippingImageVertically = flippingImageVertically(inputImage);
+                File outputFile = new File("FlippedVertically.jpg");
+                ImageIO.write(flippingImageVertically, "jpg", outputFile);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            System.out.println("The vetically flipped image has been saved by the name FlippedVertically");
         }
     }
 }
